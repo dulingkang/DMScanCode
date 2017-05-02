@@ -10,20 +10,17 @@
 #import <DMScanCode/DMVideoCamera.h>
 
 @interface ViewController ()
-
+@property (nonatomic, strong) DMVideoCamera *camera;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    DMVideoCamera *camera = [DMVideoCamera new];
-    AVCaptureVideoPreviewLayer *previewLayer =[AVCaptureVideoPreviewLayer layerWithSession:camera.session];
-    previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    previewLayer.frame = self.view.bounds;
-    [self.view.layer addSublayer:previewLayer];
-    camera.zoomFactor = 1.6;
-    [camera start];
+    _camera = [DMVideoCamera new];
+    [self.view.layer addSublayer:_camera.previewLayer];
+    _camera.zoomFactor = 1.6;
+    [_camera start];
 }
 
 

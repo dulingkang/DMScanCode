@@ -9,10 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface DMVideoCamera : NSObject
+@interface DMVideoCamera : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
 @property (nonatomic, strong) AVCaptureSession *session;
 @property (nonatomic) CGRect scanRect;
 @property (nonatomic) CGFloat zoomFactor; // 1 is original scale
+@property (nonatomic, strong) CALayer *previewLayer;
+@property (nonatomic, strong) AVCaptureVideoDataOutput *output;
+
 - (void)start;
 - (void)stop;
 @end

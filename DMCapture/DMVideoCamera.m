@@ -9,10 +9,9 @@
 #import "DMVideoCamera.h"
 #import <UIKit/UIKit.h>
 
-@interface DMVideoCamera()<AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface DMVideoCamera()
 @property (nonatomic, strong) dispatch_queue_t captureQueue;
 @property (nonatomic, strong) AVCaptureDevice *device;
-@property (nonatomic, strong) AVCaptureVideoDataOutput *output;
 @property (nonatomic, strong) AVCaptureDeviceInput *input;
 @end
 
@@ -26,14 +25,14 @@
 }
 #pragma mark - public method
 - (void)start {
-    if (![_session isRunning]) {
-        [_session startRunning];
+    if (![self.session isRunning]) {
+        [self.session startRunning];
     }
 }
 
 - (void)stop {
-    if ([_session isRunning]) {
-        [_session stopRunning];
+    if ([self.session isRunning]) {
+        [self.session stopRunning];
     }
 }
 
@@ -110,7 +109,7 @@
     return result;
 }
 
-#pragma mark - getter setter
+#pragma mark - setter
 - (void)setZoomFactor:(CGFloat)zoomFactor {
     _zoomFactor = zoomFactor;
     NSError *error;
@@ -120,39 +119,53 @@
     }
 }
 
+#pragma mark - getter
+- (CALayer *)previewLayer {
+    AVCaptureVideoPreviewLayer *previewLayer = (AVCaptureVideoPreviewLayer *)_previewLayer;
+    if (!_previewLayer) {
+        previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+        previewLayer.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+        _previewLayer = previewLayer;
+    }
+    return previewLayer;
+}
+
+- (AVCaptureVideoDataOutput *)output {
+    if (!_output) {
+        _output = [[AVCaptureVideoDataOutput alloc] init];
+        [_output setVideoSettings:@{(NSString *)kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]}];
+        [_output setAlwaysDiscardsLateVideoFrames:NO];
+        [_output setSampleBufferDelegate:self queue:_captureQueue];
+        [self.session addOutput:_output];
+    }
+    return _output;
+}
+
+- (AVCaptureSession *)session {
+    if (!_session) {
+        _session = [[AVCaptureSession alloc] init];
+        if ([_session canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
+            _session.sessionPreset = AVCaptureSessionPreset1920x1080;
+        } else {
+            _session.sessionPreset = AVCaptureSessionPreset1280x720;
+        }
+        _device  = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        _input = [AVCaptureDeviceInput deviceInputWithDevice:_device error:nil];
+        [_session addInput:_input];
+    }
+    return _session;
+}
+
 #pragma mark - private method
 - (void)setupCamera {
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         return;
     }
-    if([self isAVCaptureActive]) {
-        _captureQueue = dispatch_queue_create("com.dmall.ScanQueue", NULL);
-        NSError *error = nil;
-        _device  = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-        
-        _session = [[AVCaptureSession alloc] init];
-        [self configSessionPreset];
-        
-        _output  = [[AVCaptureVideoDataOutput alloc] init];
-        [_output setVideoSettings:@{
-                                    (NSString *)kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]
-                                    }];
-        [_output setAlwaysDiscardsLateVideoFrames:YES];
-        [_output setSampleBufferDelegate:self queue:_captureQueue];
-        
-        _input = [AVCaptureDeviceInput deviceInputWithDevice:_device error:&error];
-        if ([_session canAddInput:_input]) {
-            [_session addInput:_input];
-        }
-        if ([_session canAddOutput:_output]) {
-            [_session addOutput:_output];
-        }
-        
-    }
-    else {
+    if(![self isAVCaptureActive]) {
         [self showAccessAlert];
     }
-    
+    _captureQueue = dispatch_queue_create("com.dmall.ScanQueue", DISPATCH_QUEUE_SERIAL);
 }
 
 - (BOOL)isAVCaptureActive {
@@ -169,19 +182,4 @@
     [alertView show];
 }
 
-- (void)configSessionPreset {
-    if ([UIScreen mainScreen].bounds.size.height <= 480) {
-        if ([_session canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
-            [_session setSessionPreset:AVCaptureSessionPreset1280x720];
-        } else if ([_session canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
-            [_session setSessionPreset:AVCaptureSessionPreset1920x1080];
-        }
-    } else {
-        if ([_session canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
-            [_session setSessionPreset:AVCaptureSessionPreset1920x1080];
-        } else {
-            [_session setSessionPreset: AVCaptureSessionPresetHigh];
-        }
-    }
-}
 @end
