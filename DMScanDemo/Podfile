@@ -1,0 +1,10 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'DMScanDemo' do
+pod 'DMScanCode', :path => '../'  
+# use_frameworks!
+
+  # Pods for DMScanDemo
+
+end
