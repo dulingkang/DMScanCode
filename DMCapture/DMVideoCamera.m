@@ -25,6 +25,7 @@
 }
 #pragma mark - public method
 - (void)start {
+    [self output];
     if (![self.session isRunning]) {
         [self.session startRunning];
     }
