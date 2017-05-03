@@ -7,17 +7,17 @@
 //
 
 #import "ViewController.h"
-#import <DMScanCode/DMVideoCamera.h>
+#import <DMScanCode/DMScanCodeCamera.h>
 
 @interface ViewController ()
-@property (nonatomic, strong) DMVideoCamera *camera;
+@property (nonatomic, strong) DMScanCodeCamera *camera;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _camera = [DMVideoCamera new];
+    _camera = [DMScanCodeCamera new];
     [self.view.layer addSublayer:_camera.previewLayer];
     _camera.zoomFactor = 1.6;
     [_camera start];
