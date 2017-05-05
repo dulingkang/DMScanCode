@@ -14,6 +14,9 @@
 		2A506F9C1EB2039200D001B7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A506F9A1EB2039200D001B7 /* Main.storyboard */; };
 		2A506F9E1EB2039200D001B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A506F9D1EB2039200D001B7 /* Assets.xcassets */; };
 		2A506FA11EB2039200D001B7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A506F9F1EB2039200D001B7 /* LaunchScreen.storyboard */; };
+		2A506FB41EB9CFA400D001B7 /* test1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 2A506FB31EB9CFA400D001B7 /* test1.jpg */; };
+		2A506FB71EB9DD2C00D001B7 /* NSString+encrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A506FB61EB9DD2C00D001B7 /* NSString+encrypt.m */; };
+		2A506FBA1EBC2A6D00D001B7 /* NSData+encrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A506FB91EBC2A6D00D001B7 /* NSData+encrypt.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +30,11 @@
 		2A506F9D1EB2039200D001B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A506FA01EB2039200D001B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2A506FA21EB2039200D001B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2A506FB31EB9CFA400D001B7 /* test1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test1.jpg; sourceTree = "<group>"; };
+		2A506FB51EB9DD2C00D001B7 /* NSString+encrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+encrypt.h"; sourceTree = "<group>"; };
+		2A506FB61EB9DD2C00D001B7 /* NSString+encrypt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+encrypt.m"; sourceTree = "<group>"; };
+		2A506FB81EBC2A6D00D001B7 /* NSData+encrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+encrypt.h"; sourceTree = "<group>"; };
+		2A506FB91EBC2A6D00D001B7 /* NSData+encrypt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+encrypt.m"; sourceTree = "<group>"; };
 		4AE21FC8C638AEE6A394964F /* Pods-DMScanDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DMScanDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DMScanDemo/Pods-DMScanDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		9D2A098C93CC4337DBCD3BB1 /* libPods-DMScanDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DMScanDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D66CDE537806A01B47933C6B /* Pods-DMScanDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DMScanDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-DMScanDemo/Pods-DMScanDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -65,8 +73,13 @@
 		2A506F901EB2039200D001B7 /* DMScanDemo */ = {
 			isa = PBXGroup;
 			children = (
+				2A506FB31EB9CFA400D001B7 /* test1.jpg */,
 				2A506F941EB2039200D001B7 /* AppDelegate.h */,
 				2A506F951EB2039200D001B7 /* AppDelegate.m */,
+				2A506FB51EB9DD2C00D001B7 /* NSString+encrypt.h */,
+				2A506FB61EB9DD2C00D001B7 /* NSString+encrypt.m */,
+				2A506FB81EBC2A6D00D001B7 /* NSData+encrypt.h */,
+				2A506FB91EBC2A6D00D001B7 /* NSData+encrypt.m */,
 				2A506F971EB2039200D001B7 /* ViewController.h */,
 				2A506F981EB2039200D001B7 /* ViewController.m */,
 				2A506F9A1EB2039200D001B7 /* Main.storyboard */,
@@ -166,6 +179,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2A506FA11EB2039200D001B7 /* LaunchScreen.storyboard in Resources */,
+				2A506FB41EB9CFA400D001B7 /* test1.jpg in Resources */,
 				2A506F9E1EB2039200D001B7 /* Assets.xcassets in Resources */,
 				2A506F9C1EB2039200D001B7 /* Main.storyboard in Resources */,
 			);
@@ -226,7 +240,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A506FB71EB9DD2C00D001B7 /* NSString+encrypt.m in Sources */,
 				2A506F991EB2039200D001B7 /* ViewController.m in Sources */,
+				2A506FBA1EBC2A6D00D001B7 /* NSData+encrypt.m in Sources */,
 				2A506F961EB2039200D001B7 /* AppDelegate.m in Sources */,
 				2A506F931EB2039200D001B7 /* main.m in Sources */,
 			);
@@ -389,6 +405,7 @@
 				2A506FA71EB2039200D001B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

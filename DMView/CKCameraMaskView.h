@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UIView+Frame.h"
+
 #define kAnimationDuration              0.25f
 typedef NS_ENUM(NSInteger, MaskType)
 {

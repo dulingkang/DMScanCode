@@ -61,7 +61,8 @@
         [self setBackgroundColor:[UIColor clearColor]];
         
         _gridLayer  = [[DMCKGridLayer alloc] init];
-        [_gridLayer setBgColor:RGBA(12, 12, 23, 0.9)];
+        _gridLayer.bgColor = [UIColor colorWithRed:12/255 green:12/255 blue:23/255 alpha:0.9];
+//        [_gridLayer setBgColor:RGBA(12, 12, 23, 0.9)];
         [_gridLayer setFrame:self.bounds];
         [self.layer addSublayer:_gridLayer];
         
@@ -74,7 +75,7 @@
         _scanLine = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ScanLine"]];
         [_borderView addSubview:_scanLine];
         
-        _hintLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.width, 20)];
+        _hintLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.frame.size.width, 20)];
         [_hintLabel setBackgroundColor:[UIColor clearColor]];
         [_hintLabel setTextAlignment:NSTextAlignmentCenter];
         [self addSubview:_hintLabel];
@@ -87,7 +88,7 @@
         self.inputTextField = [[UITextField alloc]initWithFrame:_borderView.frame];
         self.inputTextField.backgroundColor= [UIColor whiteColor];
         self.inputTextField.font = [UIFont boldSystemFontOfSize:16];
-        self.inputTextField.textColor=[UIColor colorWithString:@"0x383838"];
+//        self.inputTextField.textColor=[UIColor colorWithString:@"0x383838"];
         self.inputTextField.textAlignment = NSTextAlignmentCenter;
         self.inputTextField.placeholder = @"请输入商品条形码";
         self.inputTextField.keyboardType = UIKeyboardTypeNumberPad;
@@ -140,7 +141,7 @@
         self.inputTextField.frame = _borderView.frame;
     }
     [_scanLine setFrame:CGRectMake(0, - kScanLineHeight, _noMaskRect.size.width, kScanLineHeight)];
-    [_hintLabel setY:_noMaskRect.origin.y - _hintLabel.height - 10];
+    _hintLabel.frame = CGRectMake(_hintLabel.frame.origin.x, _noMaskRect.origin.y - _hintLabel.frame.size.height - 10, _hintLabel.frame.size.width, _hintLabel.frame.size.height);
     _gridLayer.clippingRect = _noMaskRect;
     [_gridLayer setNeedsDisplay];
     
@@ -152,8 +153,8 @@
 {
     [_scanLine setHidden:NO];
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position"];
-    [animation setFromValue:[NSValue valueWithCGPoint:CGPointMake(_borderView.width / 2, - kScanLineHeight / 2)]];
-    [animation setToValue:[NSValue valueWithCGPoint:CGPointMake(_borderView.width / 2, self.noMaskRect.size.height + kScanLineHeight / 2)]];
+    [animation setFromValue:[NSValue valueWithCGPoint:CGPointMake(_borderView.frame.size.width / 2, - kScanLineHeight / 2)]];
+    [animation setToValue:[NSValue valueWithCGPoint:CGPointMake(_borderView.frame.size.width / 2, self.noMaskRect.size.height + kScanLineHeight / 2)]];
     [animation setRepeatCount:NSIntegerMax];
     [animation setDuration:2];
     [_scanLine.layer addAnimation:animation forKey:@"position"];

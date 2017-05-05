@@ -7,7 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DMVideoCamera.h"
 
-@interface DMScanCodeCamera : NSObject
-
+@protocol DMScanCodeCameraDelegate <NSObject>
+- (void)captureCodeStringOutput:(NSString *)outputString;
+@end
+@interface DMScanCodeCamera : DMVideoCamera
+@property (nonatomic) CGRect rectOfInterest; // (y, x, height, width)
+@property (nonatomic, weak) id<DMScanCodeCameraDelegate> scanCodeDelegate;
 @end

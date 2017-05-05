@@ -10,6 +10,6 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.source = { :git => 'https://github.com/dulingkang/DMScanCode.git', :tag => s.version}
   s.public_header_files = 'DMScanCode/Other/DMScanCode.h'
-  s.source_files = '{DMCapture}/*.{h,m}'
+  s.source_files = '{DMCapture,DMView}/*.{h,m}'
   s.description = 'Scan bar code and QR code'
 end

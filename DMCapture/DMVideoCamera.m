@@ -39,22 +39,14 @@
 
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-    CVImageBufferRef videoFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-    CGImageRef imageRef = [self createImageFromBuffer:videoFrame left:0 top:0 width:CVPixelBufferGetWidth(videoFrame) height:CVPixelBufferGetHeight(videoFrame)];
-    if (!CGRectIsEmpty(self.scanRect)) {
-        CGImageRef croppedImage = CGImageCreateWithImageInRect(imageRef, self.scanRect);
-        CFRelease(imageRef);
-        imageRef = croppedImage;
+    if (_hasScanned) {
+        return ;
     }
-    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:nil];
-    NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:imageRef]];
-    for (CIFeature *feature in features) {
-        NSLog(@"feature: %@", feature.type);
+    CVPixelBufferRef pixelBuffer = (CVPixelBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
+    CIImage *image = [CIImage imageWithCVPixelBuffer:pixelBuffer];
+    if ([self.videoCameraDelegate respondsToSelector:@selector(captureImageOutput:)]) {
+        [self.videoCameraDelegate captureImageOutput:image];
     }
-}
-
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-    
 }
 
 - (CGImageRef)createImageFromBuffer:(CVImageBufferRef)buffer
@@ -136,7 +128,7 @@
     if (!_output) {
         _output = [[AVCaptureVideoDataOutput alloc] init];
         [_output setVideoSettings:@{(NSString *)kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]}];
-        [_output setAlwaysDiscardsLateVideoFrames:NO];
+        [_output setAlwaysDiscardsLateVideoFrames:YES];
         [_output setSampleBufferDelegate:self queue:_captureQueue];
         [self.session addOutput:_output];
     }
@@ -166,7 +158,7 @@
     if(![self isAVCaptureActive]) {
         [self showAccessAlert];
     }
-    _captureQueue = dispatch_queue_create("com.dmall.ScanQueue", DISPATCH_QUEUE_SERIAL);
+    _captureQueue = dispatch_queue_create("com.dmall.VideoQueue", DISPATCH_QUEUE_SERIAL);
 }
 
 - (BOOL)isAVCaptureActive {
@@ -182,5 +174,4 @@
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"此应用程序没有权限来访问相机" message:@"您可以在\"隐私设置\"中启用访问" delegate:self cancelButtonTitle:@"取消"otherButtonTitles:@"设置",nil];
     [alertView show];
 }
-
 @end

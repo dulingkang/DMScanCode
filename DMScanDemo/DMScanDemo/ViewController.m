@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import <DMScanCode/DMScanCodeCamera.h>
 #import <DMScanCode/CKCameraMaskView.h>
+#import "NSString+encrypt.h"
+#import "NSData+encrypt.h"
 
 #define NavHeight  64
 #define SCREEN_WID ([UIScreen mainScreen].bounds.size.width)
@@ -28,8 +30,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self addScanCodeCamera];
-    [self addMaskView];
+    NSString *urlStr = @"https://api.productai.cn/detect_ordinary_products/_0000030";
+    NSString *secretKey = @"1660382f1af3f421217e80d509d5e728";
+    [self requestMaLong:urlStr image:[UIImage imageNamed:@"test1.jpg"] key:secretKey];
+//    [self addScanCodeCamera];
+//    [self addMaskView];
 }
 
 #pragma mark - DMScanCodeCameraDelegate
@@ -62,4 +67,32 @@
     [_maskView setMaskType:MaskTypeQRCode];
     [_maskView startScan];
 }
+
+- (void)requestMaLong:(NSString *)urlStr image:(UIImage *)image key:(NSString *)key {
+    NSURL *url = [NSURL URLWithString:urlStr];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"POST";
+    request.timeoutInterval = 20;
+    NSTimeInterval timeInSeconds = [[NSDate date] timeIntervalSince1970];
+    NSString *timeStr = [NSString stringWithFormat:@"%ld", (long)timeInSeconds];
+    NSData *bodyData = UIImageJPEGRepresentation(image, 0.6);
+    NSString *str = [NSString stringWithFormat:@"requestmethod=POST&x-ca-accesskeyid=22217560eea449af05cd0a185445c754&x-ca-signaturenonce=%@&x-ca-timestamp=%@&x-ca-version=1", timeStr,timeStr];
+    request.allHTTPHeaderFields = @{@"x-ca-version" : @"1",
+                                    @"x-ca-accesskeyid" : @"22217560eea449af05cd0a185445c754",
+                                    @"x-ca-timestamp" : timeStr,
+                                    @"x-ca-signature" : [str hmacsha1_base64:key],
+                                    @"x-ca-signaturenonce" : timeStr,
+                                    @"requestmethod" : @"POST"};
+
+    request.HTTPBody = bodyData;
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSLog(@"%@", response);
+    }];
+//    NSURLSessionUploadTask *task = [session uploadTaskWithRequest:request fromData:bodyData completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//        NSLog(@"%@", response);
+//    }];
+    [task resume];
+}
+
 @end
