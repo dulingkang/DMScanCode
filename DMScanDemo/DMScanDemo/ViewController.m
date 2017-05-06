@@ -75,22 +75,44 @@
     request.timeoutInterval = 20;
     NSTimeInterval timeInSeconds = [[NSDate date] timeIntervalSince1970];
     NSString *timeStr = [NSString stringWithFormat:@"%ld", (long)timeInSeconds];
-    NSData *bodyData = UIImageJPEGRepresentation(image, 0.6);
-    NSString *str = [NSString stringWithFormat:@"requestmethod=POST&x-ca-accesskeyid=22217560eea449af05cd0a185445c754&x-ca-signaturenonce=%@&x-ca-timestamp=%@&x-ca-version=1", timeStr,timeStr];
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.6);
+    
+    // the boundary string : a random string, that will not repeat in post data, to separate post data fields.
+    NSString *BoundaryConstant = @"----------V2ymHFg03ehbqgZCaKO6jy";
+    
+    // string constant for the post parameter 'file'. My server uses this name: `file`. Your's may differ
+    NSString* FileParamConstant = @"file";
+    NSMutableData *body = [NSMutableData data];
+
+    if (imageData) {
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", BoundaryConstant] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"test1.jpg\"\r\n", FileParamConstant] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:imageData];
+        [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", BoundaryConstant] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    // setting the body of the post to the reqeust
+    request.HTTPBody = body;
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", BoundaryConstant];
+    NSString *str = [NSString stringWithFormat:@"Content-Length=%@&Content-Type=%@&requestmethod=POST&x-ca-accesskeyid=22217560eea449af05cd0a185445c754&x-ca-signaturenonce=%@&x-ca-timestamp=%@&x-ca-version=1", [NSString stringWithFormat:@"%lu", (unsigned long)body.length], contentType, timeStr,timeStr];
     request.allHTTPHeaderFields = @{@"x-ca-version" : @"1",
                                     @"x-ca-accesskeyid" : @"22217560eea449af05cd0a185445c754",
                                     @"x-ca-timestamp" : timeStr,
                                     @"x-ca-signature" : [str hmacsha1_base64:key],
                                     @"x-ca-signaturenonce" : timeStr,
                                     @"requestmethod" : @"POST"};
-
-    request.HTTPBody = bodyData;
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)body.length] forHTTPHeaderField:@"Content-Length"];
+    // set Content-Type in HTTP header
+    [request setValue:contentType forHTTPHeaderField: @"Content-Type"];
+    
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSLog(@"%@", response);
     }];
-//    NSURLSessionUploadTask *task = [session uploadTaskWithRequest:request fromData:bodyData completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        NSLog(@"%@", response);
+//    NSURLSessionUploadTask *task = [session uploadTaskWithRequest:request fromData:body completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//            NSLog(@"%@", response);
 //    }];
     [task resume];
 }
